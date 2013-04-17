@@ -3,6 +3,10 @@
 
     <string name="app_name">heppaharkka</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    
+    <string name="tietokanta">Tietokanta</string>
+    <string name="tunnus">Tunnus</string>
+    <string name="salasana">Salasana</string>
+    <string name="lataanappi">Lataa</string>
 
 </resources>
