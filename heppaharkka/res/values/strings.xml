@@ -8,5 +8,6 @@
     <string name="tunnus">Tunnus</string>
     <string name="salasana">Salasana</string>
     <string name="lataanappi">Lataa</string>
+    <string name="logitus">logitus</string>
 
 </resources>
