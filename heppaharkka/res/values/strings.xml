@@ -9,5 +9,7 @@
     <string name="salasana">Salasana</string>
     <string name="lataanappi">Lataa</string>
     <string name="logitus">logitus</string>
+    <string name="lisaanappi"> Lisää </string>
+    <string name="einappi"> Ei </string>
 
 </resources>

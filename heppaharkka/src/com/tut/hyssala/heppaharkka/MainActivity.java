@@ -3,42 +3,31 @@ package com.tut.hyssala.heppaharkka;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
 import org.json.*;
-
-import android.R.string;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
 import android.app.Activity;
-import android.content.ContentValues;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-
-
+import android.widget.*;
 
 public class MainActivity extends Activity {
 
 	private String kanta;
 	private String tunnus;
-	private String passu;
 	Button button;
+	final Context context = this;
 	
 	//private static String url = "http://www.hyssala.fi/testi2.php?user=hanna&format=json";
 	private static String url = null;
 	TextView logiview = null;
-	String logi = "";
-	
-	
+	String logi = "";		
 	 
 	// JSON Node names
 	private static final String TAG_ID = "ID";
@@ -53,11 +42,6 @@ public class MainActivity extends Activity {
 	// contacts JSONArray
 	JSONArray contacts = null;
 	
-	
-	
-	
-	
-	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,10 +51,9 @@ public class MainActivity extends Activity {
         StrictMode.setThreadPolicy(policy);
         
         logiview = (TextView)findViewById(R.id.TextView5);
-        
+                
         addListenerOnButton();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -78,6 +61,52 @@ public class MainActivity extends Activity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+     
+    
+    
+    
+    
+    
+    
+    public void dialogi(String HARKKAPAIVA, String HARKKAAIKA, String HARKKAPAIKKA, String VALMENTAJA, String HEVONEN){    	
+    	
+		// custom dialog
+		final Dialog dialog = new Dialog(context);
+		dialog.setContentView(R.layout.kysy);
+		dialog.setTitle("pvm:"+HARKKAPAIVA + " klo:" + HARKKAAIKA);
+
+		// set the custom dialog components - text, image and button
+		TextView text = (TextView) dialog.findViewById(R.id.text);
+		text.setText("Android custom dialog example!");
+		ImageView image = (ImageView) dialog.findViewById(R.id.image);
+		image.setImageResource(R.drawable.ic_launcher);
+
+		Button dialogButton1 = (Button) dialog.findViewById(R.id.dialogNappiKylla);
+		// if button is clicked, close the custom dialog
+		dialogButton1.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();				
+			}
+		});
+		
+		Button dialogButton2 = (Button) dialog.findViewById(R.id.dialogNappiEi);
+		// if button is clicked, close the custom dialog
+		dialogButton2.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();				
+			}			
+		});
+
+		dialog.show();
+		
+		
+	  }
+	
+    
+    
+    
    
             
     public void LataaTiedot(View view){
@@ -86,15 +115,18 @@ public class MainActivity extends Activity {
 		kanta = kantaTextView.getText().toString();
 		TextView tunnusTextView=(TextView)findViewById(R.id.tunnus);
 		tunnus = tunnusTextView.getText().toString();
-		TextView passuTextView=(TextView)findViewById(R.id.salasana);
-		passu = passuTextView.getText().toString();
 		
 		System.out.println("Avataan yhteys: " + kanta + " " + tunnus);
 		logi = "Avataan yhteys: " + kanta + " " + tunnus;		
-		loginkirjoitus();
-		
+		loginkirjoitus(logi);		
 		
 	}
+    
+    
+    
+    
+    
+    
     
     public void parsiJSON(){
     	
@@ -103,9 +135,8 @@ public class MainActivity extends Activity {
     	 
     	// getting JSON string from URL
     	JSONObject json = jParser.getJSONFromUrl(url);
-    	 
-    	try {
-    		
+    	   	    	
+    	try { 	    		
     	    // Getting Array of Contacts
     	    contacts = json.getJSONArray("posts");
     	    System.out.println(contacts);	//tulostaa koko taulukon
@@ -124,48 +155,49 @@ public class MainActivity extends Activity {
     	        String RATSASTAJA = c.getString(TAG_RATSASTAJA);
     	        String HEVONEN = c.getString(TAG_HEVONEN);
     	        String VALMENTAJA = c.getString(TAG_VALMENTAJA);
-    	        String ILMOITTAUTUNUT = c.getString(TAG_ILMOITTAUTUNUT);
+    	        String ILMOITTAUTUNUT = c.getString(TAG_ILMOITTAUTUNUT);     
     	        
+    	        logi = HARKKAPAIVA + " " + HARKKAAIKA + " " + HARKKAPAIKKA + " " + VALMENTAJA + " " + HEVONEN;
+    	        loginkirjoitus(logi);  
     	        
-    	 
-    	        // Phone number is agin JSON Object
-//    	        JSONObject phone = c.getJSONObject(TAG_PHONE);
-//    	        String mobile = phone.getString(TAG_PHONE_MOBILE);
-//    	        String home = phone.getString(TAG_PHONE_HOME);  
-    	        
-    	        
-    	        
-    	        logi = ID + " " + HARKKAPAIKKA + " " + HARKKAPAIVA + " " + HARKKAAIKA + " " + RATSASTAJA + " " + HEVONEN + " " + VALMENTAJA + " " + ILMOITTAUTUNUT;
-    	        loginkirjoitus();
-    	        
+    	        dialogi(HARKKAPAIVA,HARKKAAIKA,HARKKAPAIKKA,VALMENTAJA,HEVONEN);
     	            	        
     	    }
     	    
-    	   
+    	    
     	    
     	    
     	    
     	} catch (JSONException e) {
     	    e.printStackTrace();
     	    logi = "Tiedon parsiminen ei onnistunut.";
-    	    loginkirjoitus();
+    	    loginkirjoitus(logi);
+    	}    	
+    	catch (Exception e){
+    		e.printStackTrace();
+    	    logi = "Tiedon parsiminen ei onnistunut.";
+    	    loginkirjoitus(logi);
+    		
     	}
     	
-    	lisaaKalenteri();
+    	
+    	//lisaaKalenteri();
     	
     }
     
     
     
-    public void loginkirjoitus(){
+    public void loginkirjoitus(String logi){
     	
-    	Calendar a = Calendar.getInstance(); 
-    	
+    	this.logi = logi;    	
+    	Calendar a = Calendar.getInstance();     	
     	String logi2 = logiview.getText().toString();
     	logi = logi2 + " " + a.get(Calendar.HOUR) + ":" + a.get(Calendar.MINUTE) +":"+ a.get(Calendar.SECOND) + " " + logi;
-    	logiview.setText(logi);
-    	
+    	logiview.setText(logi);    	
     }
+    
+    
+    
     
     public void lisaaKalenteri(){
     
@@ -226,6 +258,11 @@ public class MainActivity extends Activity {
     }
     
     
+
+    
+    
+    
+    
     
     
 	public void addListenerOnButton() {
@@ -245,14 +282,13 @@ public class MainActivity extends Activity {
 				
 				System.out.println("Avataan yhteys: " + kanta + " " + tunnus);
 				logi = "Avataan yhteys: " + kanta + " " + tunnus;		
-				loginkirjoitus();				
+				loginkirjoitus(logi);				
 												
-				url = kanta + "?user=" + tunnus + "&format=json"; //"http://www.hyssala.fi/testi2.php?user=hanna&format=json";
-				url = "http://www.hyssala.fi/testi2.php?user=" + tunnus + "&format=json";
-				System.out.println(url);
+				//url = kanta + "?user=" + tunnus + "&format=json"; //"http://www.hyssala.fi/testi2.php?user=hanna&format=json";
+				url = "http://www.hyssala.fi/testi2.php?user=hanna&format=json";
+				//System.out.println(url);
 				
-				parsiJSON();
-					
+				parsiJSON();					
 				
 			}
  
